@@ -1,0 +1,19 @@
+Description: "OpscUserGroup-AIM-policy"
+Resources:
+  OpscUserPolicies:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: OpscUsers
+      PolicyDocument:
+        Statement:
+        - Effect: Allow
+          Action: ['ec2:*']
+          Resource: '*'
+        Condition:
+          StringEquals:
+            ec2:InstanceType:
+            - t2.micro
+      Groups: 
+        - !ImportValue 'OpscUserGroup' 
+
+

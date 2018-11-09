@@ -1,0 +1,89 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Metadata: 
+  License: Apache-2.0
+Description: 'AWS CloudFormation Template IAM_Users_Groups_and_Policies: 
+  this templare will create the following resources
+  aws groups  OpscAdminGroup, OpscUserGroup
+  aws users  OpscAdminUser, OpscUser
+  aws policies OpscAdminPolicy OpscUserPolicy'
+Parameters:
+  Password:
+    NoEcho: 'true'
+    Type: String
+    Description: New account password
+    MinLength: '8'
+    MaxLength: '41'
+    ConstraintDescription: the password must be between 1 and 41 characters
+  AdminPassword:
+    NoEcho: 'true'
+    Type: String
+    Description: New account password
+    MinLength: '8'
+    MaxLength: '41'
+    ConstraintDescription: the password must be between 1 and 41 characters
+Resources:
+  OpscUser:
+    Type: AWS::IAM::User
+    Properties:
+      LoginProfile:
+        Password: !Ref 'Password'
+  OpscAdminUser:
+    Type: AWS::IAM::User
+    Properties:
+      LoginProfile:
+        Password: !Ref 'AdminPassword'
+  OpscUserGroup:
+    Type: AWS::IAM::Group
+  OpscAdminGroup:
+    Type: AWS::IAM::Group
+  Users:
+    Type: AWS::IAM::UserToGroupAddition
+    Properties:
+      GroupName: !Ref 'OpscUserGroup'
+      Users: [!Ref 'OpscUser']
+  Admins:
+    Type: AWS::IAM::UserToGroupAddition
+    Properties:
+      GroupName: !Ref 'OpscAdminGroup'
+      Users: [!Ref 'OpscAdminUser']
+  OpscUserPolicies:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: OpscUsers
+      PolicyDocument:
+        Statement:
+        - Effect: Allow
+          Action: ['cloudformation:Describe*', 'cloudformation:List*', 'cloudformation:Get*']
+          Resource: '*'
+      Groups: [!Ref 'OpscUserGroup']
+  OpscAdminPolicies:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: OpscAdmins
+      PolicyDocument:
+        Statement:
+        - Effect: Allow
+          Action: cloudformation:*
+          Resource: '*'
+      Groups: [!Ref 'OpscAdminGroup']
+  OpscKeys:
+    Type: AWS::IAM::AccessKey
+    Properties:
+      UserName: !Ref 'OpscUser'
+Outputs:
+  AccessKey:
+    Value: !Ref 'OpscKeys'
+    Description: AWSAccessKeyId of new user
+  SecretKey:
+    Value: !GetAtt [OpscKeys, SecretAccessKey]
+    Description: AWSSecretKey of new user
+  OpscUserGroup:
+    Value: !Ref 'OpscUserGroup'
+    Description: AIM group for the opsschool users
+    Export:
+      Name: OpscUserGroup    
+  OpscAdminGroup:
+    Value: !Ref 'OpscAdminGroup'
+    Description: AIM group for the opsschool Admin users
+    Export:
+      Name: OpscAdminGroup

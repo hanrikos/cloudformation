@@ -1,0 +1,37 @@
+Description: "OpsSchool Daily Budget Alert"
+Parameters:
+  EmailAddress:
+    NoEcho: 'false'
+    Type: String
+    Description: Email for notifications
+  MonthlyBudgetAmount:
+    NoEcho: 'false'
+    Type: Number
+    Default : 10
+    Description: monthly budget in Dolars
+  NotificationThreshold:
+    NoEcho: 'false'
+    Type: Number
+    Default : 50
+    Description: monthly budget in Dolars
+Resources:
+  MonthlyOpsSchoolBudget:
+    Type: "AWS::Budgets::Budget"
+    Properties:
+      Budget:
+        BudgetLimit:
+          Amount: !Ref 'MonthlyBudgetAmount'
+          Unit: USD
+        TimeUnit: MONTHLY
+        BudgetType: COST
+      NotificationsWithSubscribers:
+        - Notification:
+            NotificationType: ACTUAL
+            ComparisonOperator: GREATER_THAN
+            Threshold: !Ref 'NotificationThreshold'
+          Subscribers:
+          - SubscriptionType: EMAIL
+            Address: !Ref 'EmailAddress'
+Outputs:
+  BudgetId:
+    Value: !Ref MonthlyOpsSchoolBudget
