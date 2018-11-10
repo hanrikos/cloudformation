@@ -18,7 +18,18 @@ Parameters:
     Type: AWS::EC2::KeyPair::KeyName
     ConstraintDescription: must be the name of an existing EC2 KeyPair.
 Mappings:
+      us-east-1:
+          AMI: ami-0f9351b59be17920e
+      us-east-2:
+          AMI: ami-0b19eeac8c68a0d2d
+      us-west-1:
+          AMI: ami-0e066bd33054ef120
+      us-west-2:
+          AMI: ami-0afae182eed9d2b46
+      ca-central-1:
+          AMI: ami-0855ce2497d6ac2d9
   AWSRegionToAMI:
+# amazon linux ami-s
       us-east-1:
           AMI: ami-013be31976ca2c322
       us-east-2:
@@ -28,7 +39,19 @@ Mappings:
       us-west-2:
           AMI: ami-79873901
       ca-central-1:
-          AMI: ami-32bb0556    
+          AMI: ami-32bb0556
+# ubuntu ami-s
+#        us-east-1:
+#          AMI: ami-0f9351b59be17920e
+#      us-east-2:
+#          AMI: ami-0b19eeac8c68a0d2d
+#      us-west-1:
+#          AMI: ami-0e066bd33054ef120
+#      us-west-2:
+#          AMI: ami-0afae182eed9d2b46
+#      ca-central-1:
+#          AMI: ami-0855ce2497d6ac2d9
+
 Resources:
   Prometheus:
     # http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ec2-instance.html
